@@ -1,0 +1,26 @@
+					lclib
+			Linux	Cryptographic	Library
+
+motivation
+	I needed a library of functions that enabled me to perform hash 
+functions and symmetric cryptography. I chose MD5 initially but 
+eventually chose SHA as the hashing algorithm due to concerns regarding 
+the 'collision resistance' of MD5 due to weakness in the compression 
+function.
+	I chose Blowfish over DES or triple DES due to the fact that DES 
+has a restricted key length nad had been successfully attacked whereas 
+Blowfish has variable key lengths and also, known attacks rely on fewer rounds 
+being used, and as the full complement of rounds would be used, I did not see 
+this as an issue. The library allows blowfish to be used with any key size 
+from 64 bit (although 128 bit and greater (up to 448 bit) is recommended.
+	Finally, I chose the bnlib-1.1 multi precision library by Colin 
+Plum so that I could implement RSA easily. RSA is used for public key 
+cryptography and for signing keys and data.
+
+The implementor of the blowfish code I use is Paul Kocher (pck@netcom.com)
+The implementor of the SHA code I use is Uwe Hollerbach (uh@alumni.caltech)
+	The code for SHA is derived from Peter C. Gutmann's implementation 
+	as found in Applied Cryptography by Bruce Schneier
+The implementor of the multi precision library bnlib-1.1 is Colin Plumb
+	(colin@nyx.net)
+The implementor of the RSA code used is John Horton (jh_squirrel@yahoo.com)

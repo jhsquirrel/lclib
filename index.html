@@ -1,0 +1,58 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; Linux 2.2.14-5.0 i586) [Netscape]">
+</head>
+<body>
+&nbsp;
+<center>
+<p><b><font size=+2>LCLib</font></b></center>
+
+<p>&nbsp;&nbsp;&nbsp; I needed a library of functions that enabled me to
+perform hash functions and symmetric cryptography.
+<br>I chose MD5 initially but eventually chose SHA as the hashing algorithm
+due to concerns regarding the 'collision resistance' of MD5 due to weakness
+in the compression function.
+<br>I chose Blowfish over DES or triple DES due to the fact that DES has
+a restricted key length nad had been successfully attacked whereas Blowfish
+has variable key lengths and also, known attacks rely on fewer rounds being
+used, and as the full complement of rounds would be used, I did not see
+this as an issue.
+<br>The library allows blowfish to be used with any key size from 64 bit
+(although 128 bit and greater (up to 448 bit) is recommended.
+<br>Finally, I chose the bnlib-1.1 multi precision library by Colin Plum
+so that I could implement RSA easily.
+<br>RSA is used for public key cryptography and for signing keys and data.
+<br>The implementor of the blowfish code I use is Paul Kocher (pck@netcom.com)
+<br>The implementor of the SHA code I use is Uwe Hollerbach (uh@alumni.caltech)
+<br>The code for SHA is derived from Peter C. Gutmann's implementation
+as found in Applied Cryptography by Bruce Schneier
+<br>The implementor of the multi precision library bnlib-1.1 is Colin Plumb
+(colin@nyx.net)
+<br>The implementor of the RSA code used is John Horton (jh_squirrel@yahoo.com)
+<p>&nbsp;<a href="docs.html">documentation</a>
+<br>
+<p>
+anonymous cvs access to the source can be obtained by the following 
+method
+</p>
+<br>
+cvs -d:pserver:anonymous@cvs.lclib.sourceforge.net:/cvsroot/lclib login 
+<br>
+cvs -z3 -d:pserver:anonymous@cvs.lclib.sourceforge.net:/cvsroot/lclib co 
+lclib
+<br>
+<a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/lclib/">view files
+</a>
+<br>
+<a 
+href="http://cvs.sourceforge.net/cvstarballs/lclib-cvsroot.tar.gz">download 
+latest tarball
+</a>
+<br>
+<A  href="http://sourceforge.net"> <IMG
+src="http://sourceforge.net/sflogo.php?group_id=43475" width="88" height="31"
+border="0" alt="SourceForge Logo"></A>
+</body>
+</html>

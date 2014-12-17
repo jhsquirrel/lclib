@@ -1,0 +1,2 @@
+use secure memory - lock memory pages upon alloc
+

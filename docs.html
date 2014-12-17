@@ -1,0 +1,151 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; Linux 2.2.14-5.0 i586) [Netscape]">
+</head>
+<body>
+&nbsp;
+<center>
+<p><b>Documentation for LCLib</b></center>
+
+<p>There are 3 basic algorithms that the library offers :-
+<br>Blowfish (symmetric algorithm - ebc and cbc modes)
+<br>SHA (hashing algorithm - produces 160 bit hash)
+<br>RSA (asymmetric algorithm)
+<p>The Blowfish implementation is one by Paul Kocher (pck@netcom.com)
+<br>The SHA implementation is one by Uwe Hollerbacj (uh@alumni.caltech)
+<br>The RSA implementation is one by John Horton (jh_squirrel@yahoo.com)
+and uses the multi precision library (bnlib-1.1) by Colin Plumb (colin@nyx.net)
+<p>All functions in the library have a LCLIB_CTX passed to them. This context
+is defined as:-
+<p><i>typedef struct{</i>
+<br><i>IV bf_iv;</i>
+<br><i>BLOWFISH_CTX bf_ctx;</i>
+<br><i>SHA_INFO sha_ctx;</i>
+<br><i>RSA_CTX rsa_ctx;</i>
+<br><i>}LCLIB_CTX;</i>
+<p>The function declarations can be found below
+<br>All functions return 0 if OK and an integer less than 0 upon error
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><b>Blowfish</b>
+<br>int bf_ebc_init(LCLIB_CTX *ctx,unsigned char *key,unsigned int keyLen)
+<br>int bf_cbc_init(LCLIB_CTX *ctx,unsigned char *key,unsigned int keyLen,unsigned
+long int l,unsigned long int r)
+<br><i>l and r (used in cbc mode) are the left and right initialisation 
+vectors</i>
+<p>bf_ebc_enc(LCLIB_CTX *ctx,unsigned char *data,unsigned int *datLen,int
+pad)
+<br>bf_cbc_enc(LCLIB_CTX *ctx,unsigned char *data,unsigned int *datLen,int
+pad)
+<br><i>all pointers (data) passed must be of blocklen size even if 
+unused
+bytes are set to zero</i>
+<br><i>setting pad to 1 will ensure that if a block is short then it 
+will
+be padded with zeros (and a unsigned char indicating how many zeros were
+used will be the last byte in the block)</i>
+<p>bf_ebc_dec(LCLIB_CTX *ctx,unsigned char *data,unsigned int *datLen,int
+pad)
+<br>bf_cbc_dec(LCLIB_CTX *ctx,unsigned char *data,unsigned int *datLen,int
+pad)
+<br><i>datLen is a pointer that may be updated if the data was padded. 
+An
+error will occur if datLen%8 !=0</i>
+<br><i>These functions will remove padding if pad = 1</i>
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><b>SHA</b>
+<br>int sha_hash_init(LCLIB_CTX *ctx)
+<br><i>initialises SHA hashing algorithm</i>
+<p>int sha_hash_update(LCLIB_CTX *ctx,unsigned char *data,unsigned int
+datLen)
+<br><i>will update SHA with datLen bytes of data</i>
+<p>int sha_hash_final(LCLIB_CTX *ctx)
+<br><i>will finalise the hashing algorithm</i>
+<br><i>the hash is now stored in ctx and can be obtained:-</i>
+<br>&nbsp;&nbsp;&nbsp; for(int i=0;i&lt;5;i++)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+printf("%08lx ",ctx.sha_ctx.digext[i]);
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><b>RSA</b>
+<br>rsa_init(LCLIB_CTX *ctx,unsigned long bitlen)
+<br><i>initialises key variables so that they can accept bitlen bits for 
+the keys</i>
+<br>rsa_init_n(LCLIB_CTX *ctx,unsigned long bitlen)
+<br><i>initialises public key n so that it can accept bitlen bits</i>
+<br>rsa_init_d(LCLIB_CTX *ctx,unsigned long bitlen)
+<br><i>initialises private key d so that it can accept bitlen bits</i>
+<br>rsa_init_e(LCLIB_CTX *ctx)
+<br><i>initialises public exponent e</i>
+
+<p>rsa_genkeys(LCLIB_CTX *ctx,unsigned char *s1,unsigned long int l1,
+unsigned char *s2,unsigned long int l2)
+<br><i>generates N,d and e (of size bitlen - defined during rsa_init)</i>
+<br><i> s1 and s2 are the random bits (of size l1 and l2) used to 
+calculate key</i>
+<br>rsa_genkeys_internal(LCLIB_CTX *ctx)
+<br><i>generate keys using internal functions (currently only uses 
+/dev/urandom - no prng is used!</i>
+
+<p>rsa_setkeys(LCLIB_CTX *ctx,unsigned char *N,unsigned char *d,unsigned
+char *e)
+<br><i>sets the public and private keys for the context.</i>
+<br><i>N, e and d are null terminated strings.</i>
+<br>rsa_setkey_n(LCLIB_CTX *ctx,unsigned char *N)
+<br><i>sets n</i>
+<br>rsa_setkey_e(LCLIB_CTX *ctx,unsigned char *e) 
+<br><i>sets e</i>
+<br>rsa_setkey_d(LCLIB_CTX *ctx,unsigned char *d) 
+<br><i>sets d</i>
+
+<p>rsa_extractkeys(LCLIB_CTX *ctx,unsigned char **N,unsigned char **d,unsigned
+char **e)
+<br><i>extracts the keys from the context so that may be saved for 
+later</i>
+<br><i>The function will allocate enough memory to hold N, d and e. The 
+user
+should provide the address of an address of a pointer for N, d and 
+e.</i>
+<br>rsa_freekeys(LCLIB_CTX *ctx,unsigned char **N,unsigned char **d,
+unsigned char **e)
+<br><i> will free memory allocated by rsa_extractkeys</i>
+<p>rsa_encrypt(LCLIB_CTX *ctx,unsigned char *data,unsigned long int *datLen)
+<br><i>data should be a pointer obtained by rsa_alloc (it's size will be 
+equal
+to the size of ctx->rsa_ctx->N) datLen is the size of the actual data (and
+must be less than or equal to N - (2*SHAHASHSIZE) -1 )</i>
+<p>rsa_sign(LCLIB_CTX *ctx,unsigned char *data,unsigned long int *datLen)
+<br><i>rsa_sign is essentially the same as rsa_encrypt so all the same 
+operations
+hold true as defined above</i>
+<br>&nbsp;
+<p>rsa_decrypt(LCLIB_CTX *ctx,unsigned char *data,unsigned int *datLen)
+<p>rsa_verify(LCLIB_CTX *ctx,unsigned char *data,unsigned int *datLen)
+<br><i>rsa_verify is essentially the same as rsa_decrypt, so , as before 
+the
+same rules apply</i>
+<br>&nbsp;
+<p>unsigned char* rsa_alloc(LCLIB_CTX *ctx,unsigned char*data1,unsigned
+int size)
+<br><i>This will allocate enough memory to hold data specified by data1. 
+If
+data1 is greater in size to the modulus held in ctx then NULL will be 
+returned.</i>
+<p>rsa_free(unsigned char*data);
+<br><i>frees previously allocated memory</i>
+<p><i><b>The test programs included with the distribution will exemplify 
+this
+documentation</b></i>
+<p>John Horton Jan 2002
+<br>( jh_squirrel@yahoo.co.uk )
+</body>
+</html>
